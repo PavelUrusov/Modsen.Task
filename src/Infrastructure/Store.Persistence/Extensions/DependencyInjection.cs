@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Store.Application.Interfaces;
 using Store.Domain.Entities;
 using Store.Persistence.Repositories;
+using Store.Persistence.Services;
 
 namespace Store.Persistence.Extensions;
 
@@ -29,6 +30,13 @@ public static class DependencyInjection
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddTransactionService(this IServiceCollection services)
+    {
+        services.AddScoped<ITransactionService, TransactionService>();
 
         return services;
     }
