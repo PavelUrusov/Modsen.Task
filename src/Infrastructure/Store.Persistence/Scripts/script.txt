@@ -1,0 +1,5 @@
+Instruction: Open the folder Store.Persistence open a command prompt and use scripts
+
+dotnet ef migrations add InitialStoreDbMigration -c StoreDbContext -o Data/Migrations/StoreDb --startup-project ../../Presentation/Store.WebApi/Store.WebApi.csproj
+
+dotnet ef database update -c StoreDbContext --startup-project ../../Presentation/Store.WebApi/Store.WebApi.csproj
