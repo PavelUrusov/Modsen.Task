@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Reflection.Emit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +6,7 @@ using Store.Domain.Entities;
 
 namespace Store.Persistence;
 
-internal class StoreDbContext :IdentityDbContext<User, IdentityRole<Guid>, Guid>
+internal class StoreDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
 {
     public StoreDbContext(DbContextOptions<StoreDbContext> options)
         : base(options)
@@ -30,6 +29,5 @@ internal class StoreDbContext :IdentityDbContext<User, IdentityRole<Guid>, Guid>
         builder.Entity<IdentityUserClaim<Guid>>().ToTable("UserClaims");
         builder.Entity<IdentityRoleClaim<Guid>>().ToTable("RoleClaims");
         builder.Entity<IdentityUserToken<Guid>>().ToTable("UserTokens");
-
     }
 }

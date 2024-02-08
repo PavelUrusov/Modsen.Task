@@ -21,4 +21,8 @@
     <ProjectReference Include="..\..\Core\Store.Application\Store.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
+  </ItemGroup>
+
 </Project>
