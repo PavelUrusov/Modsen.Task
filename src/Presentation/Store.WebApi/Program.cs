@@ -1,3 +1,4 @@
+using Store.Application.Extensions;
 using Store.Persistence.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddRepositories();
 builder.Services.AddTransactionService();
+builder.Services.AddMapper();
 
 var app = builder.Build();
 
