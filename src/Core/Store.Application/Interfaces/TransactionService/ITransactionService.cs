@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace Store.Application.Interfaces;
+namespace Store.Application.Interfaces.TransactionService;
 
 public interface ITransactionService
 {

@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Store.Application.Interfaces;
+using Store.Application.Interfaces.TransactionService;
 
 namespace Store.Persistence.Services;
 
@@ -28,12 +28,14 @@ internal class TransactionService : ITransactionService
         {
             foreach (var action in actions) await action();
             await transaction.CommitAsync(cancellationToken);
-            _logger.LogDebug($"{_serviceName}.{methodName}. Transaction {transaction.TransactionId} committed successfully.");
+            _logger.LogDebug(
+                $"{_serviceName}.{methodName} Transaction {transaction.TransactionId} committed successfully.");
         }
         catch (Exception ex)
         {
             await transaction.RollbackAsync(cancellationToken);
-            _logger.LogError($"{_serviceName}.{methodName}. Transaction rolled back due to an error. Error: {ex.Message}");
+            _logger.LogError(
+                $"{_serviceName}.{methodName} Transaction rolled back due to an error. Error: {ex.Message}");
             throw;
         }
     }

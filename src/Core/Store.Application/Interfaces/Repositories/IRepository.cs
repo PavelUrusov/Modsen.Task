@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using Store.Domain.Interfaces;
 
-namespace Store.Application.Interfaces;
+namespace Store.Application.Interfaces.Repositories;
 
 public interface IRepository<TEntity, TKey>
     where TEntity : class, IEntity<TKey>
