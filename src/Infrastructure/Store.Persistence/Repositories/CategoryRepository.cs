@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using Store.Application.Interfaces;
+using Store.Application.Interfaces.Repositories;
 using Store.Domain.Entities;
 
 namespace Store.Persistence.Repositories;

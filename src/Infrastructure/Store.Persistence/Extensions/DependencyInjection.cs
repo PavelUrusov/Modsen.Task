@@ -2,7 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Store.Application.Interfaces;
+using Store.Application.Interfaces.Repositories;
+using Store.Application.Interfaces.TransactionService;
 using Store.Domain.Entities;
 using Store.Persistence.Repositories;
 using Store.Persistence.Services;

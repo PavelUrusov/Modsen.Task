@@ -10,6 +10,6 @@ public class DevController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> HiPoint()
     {
-        return Ok("Hello world!");
+        return Ok("Hello world");
     }
 }

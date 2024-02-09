@@ -12,6 +12,9 @@ builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddRepositories();
 builder.Services.AddTransactionService();
 builder.Services.AddMapper();
+builder.Services.AddMediatr();
+builder.Services.AddValidator();
+builder.Services.AddValidatorBehavior();
 
 var app = builder.Build();
 
