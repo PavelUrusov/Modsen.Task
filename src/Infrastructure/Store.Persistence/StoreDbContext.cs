@@ -17,6 +17,7 @@ internal class StoreDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid
     public DbSet<Order> Orders { get; set; } = null!;
     public DbSet<OrderItem> OrderItems { get; set; } = null!;
     public DbSet<Product> Products { get; set; } = null!;
+    public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
