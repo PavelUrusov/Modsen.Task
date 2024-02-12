@@ -1,5 +1,5 @@
 ﻿using Store.Application.Common;
-using Store.Auth.DTO;
+using Store.Auth.Common.DTO;
 
 namespace Store.Auth.Interfaces;
 
