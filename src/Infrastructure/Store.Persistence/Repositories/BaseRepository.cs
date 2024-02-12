@@ -104,7 +104,7 @@ internal abstract class BaseRepository<TEntity, TKey, TRepository> : IRepository
         try
         {
             Logger.LogDebug($"{ServiceName}.{methodName} - Starting to find a {EntityType} by ID.");
-            var entity = await DbSet.FindAsync(key, cancellationToken);
+            var entity = await DbSet.FindAsync(key);
             if (entity != null)
                 Logger.LogDebug($"{ServiceName}.{methodName} - Successfully found a {EntityType} by ID.");
             else
@@ -118,16 +118,19 @@ internal abstract class BaseRepository<TEntity, TKey, TRepository> : IRepository
         }
     }
 
-    public virtual async Task<IEnumerable<TEntity>> ReadRangeAsync(int skip, int take,
-        Expression<Func<TEntity, TKey>> keySelector,
-        CancellationToken cancellationToken = default)
+    public virtual async Task<IEnumerable<TEntity>> ReadRangeAsync<TKeySelector>(int skip, int take,
+        Expression<Func<TEntity, TKeySelector>> keySelector,
+        IEnumerable<Expression<Func<TEntity, bool>>>? filters = default,
+        CancellationToken cancellationToken = default) where TKeySelector : IComparable
     {
         var methodName = nameof(ReadRangeAsync);
         try
         {
             Logger.LogDebug(
                 $"{ServiceName}.{methodName} - Starting to read a range of {EntityType} entities, skipping {skip} and taking {take}.");
-            var entities = await DbSet.OrderBy(keySelector).Skip(skip).Take(take).ToListAsync(cancellationToken);
+            var query = DbSet.AsQueryable();
+            foreach (var filter in filters) query = query.Where(filter);
+            var entities = await query.OrderBy(keySelector).Skip(skip).Take(take).ToListAsync(cancellationToken);
             Logger.LogDebug($"{ServiceName}.{methodName} Successfully read a range of {EntityType} entities.");
             return entities;
         }

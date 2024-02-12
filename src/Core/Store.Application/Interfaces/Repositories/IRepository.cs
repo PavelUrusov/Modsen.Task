@@ -13,8 +13,10 @@ public interface IRepository<TEntity, TKey>
     public Task UpdateRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
     public Task<TEntity?> ReadAsync(TKey key, CancellationToken cancellationToken = default);
 
-    public Task<IEnumerable<TEntity>> ReadRangeAsync(int skip, int take, Expression<Func<TEntity, TKey>> keySelector,
-        CancellationToken cancellationToken = default);
+    public Task<IEnumerable<TEntity>> ReadRangeAsync<TKeySelector>(int skip, int take,
+        Expression<Func<TEntity, TKeySelector>> keySelector,
+        IEnumerable<Expression<Func<TEntity, bool>>>? filters = default,
+        CancellationToken cancellationToken = default) where TKeySelector : IComparable;
 
     public Task<IEnumerable<TEntity>> ReadAllAsync(CancellationToken cancellationToken = default);
     public Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default);

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Store.Application.Interfaces.Repositories;
 using Store.Domain.Entities;
 
@@ -8,5 +9,10 @@ internal class CategoryRepository : BaseRepository<Category, int, CategoryReposi
 {
     public CategoryRepository(StoreDbContext dbContext, ILogger<CategoryRepository> logger) : base(dbContext, logger)
     {
+    }
+
+    public async Task<Category?> ReadByNameAsync(string name)
+    {
+        return await DbSet.FirstOrDefaultAsync(c => c.Name == name);
     }
 }

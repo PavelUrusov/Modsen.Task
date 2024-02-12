@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Store.Application.Common;
-using Store.Auth.DTO;
+using Store.Auth.Common.DTO;
 using Store.Auth.Interfaces;
 
 namespace Store.WebApi.Controllers;

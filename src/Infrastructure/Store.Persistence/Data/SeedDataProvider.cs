@@ -10,6 +10,7 @@ namespace Store.Persistence.Data;
 public static class SeedDataProvider
 {
     private const string ServiceName = nameof(SeedDataProvider);
+
     public static async Task<IHost> SeedInitialDataAsync(this IHost host)
     {
         var scope = host.Services.CreateScope();
@@ -20,6 +21,7 @@ public static class SeedDataProvider
         await SeedInitialUsers(userManager, logger);
         return host;
     }
+
     private static async Task SeedInitialRolesAsync(RoleManager<IdentityRole<Guid>> roleManager, ILogger<IHost> logger)
     {
         var methodName = nameof(SeedInitialRolesAsync);

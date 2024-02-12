@@ -12,7 +12,6 @@ using Microsoft.IdentityModel.Tokens;
 using Store.Application.Common;
 using Store.Application.Interfaces.TransactionService;
 using Store.Auth.Configuration;
-using Store.Auth.DTO;
 using Store.Auth.Interfaces;
 using Store.Domain.Entities;
 
