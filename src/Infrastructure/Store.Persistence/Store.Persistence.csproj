@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Store.Application\Store.Application.csproj" />
+    <ProjectReference Include="..\Store.Auth\Store.Auth.csproj" />
   </ItemGroup>
 
   <ItemGroup>

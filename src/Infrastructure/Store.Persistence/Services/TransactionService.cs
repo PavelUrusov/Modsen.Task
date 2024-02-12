@@ -18,7 +18,7 @@ internal class TransactionService : ITransactionService
         _serviceName = nameof(TransactionService);
     }
 
-    public async Task ExecuteInTransactionAsync(IEnumerable<Func<Task>> actions,
+    public async Task ExecuteInTransactionAsync(Func<Task> action,
         IsolationLevel isolationLevel = IsolationLevel.ReadCommitted, CancellationToken cancellationToken = default)
     {
         var methodName = nameof(ExecuteInTransactionAsync);
@@ -26,7 +26,7 @@ internal class TransactionService : ITransactionService
             await _dbContext.Database.BeginTransactionAsync(isolationLevel, cancellationToken);
         try
         {
-            foreach (var action in actions) await action();
+            await action();
             await transaction.CommitAsync(cancellationToken);
             _logger.LogDebug(
                 $"{_serviceName}.{methodName} Transaction {transaction.TransactionId} committed successfully.");
