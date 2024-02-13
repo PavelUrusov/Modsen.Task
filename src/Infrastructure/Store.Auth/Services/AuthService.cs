@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Store.Application.Common;
 using Store.Application.Interfaces.TransactionService;
+using Store.Auth.Common.DTO;
 using Store.Auth.Configuration;
 using Store.Auth.Interfaces;
 using Store.Domain.Entities;
@@ -19,7 +20,6 @@ namespace Store.Auth.Services;
 
 public class AuthService : IAuthService
 {
-    private const string ServiceName = nameof(AuthService);
     private readonly IAuthContext _authContext;
     private readonly string _ipAddress;
     private readonly JwtBearerConfiguration _jwtConfig;
@@ -57,7 +57,7 @@ public class AuthService : IAuthService
     public async Task<ResponseBase> SignOutAsync()
     {
         var methodName = nameof(SignOutAsync);
-        _logger.LogInformation($"{ServiceName}.{methodName} - Logging out the user.");
+        _logger.LogInformation($"{methodName} - Logging out the user.");
 
         var token = _authContext.RefreshToken();
         var userId = _authContext.UserId();
@@ -65,8 +65,8 @@ public class AuthService : IAuthService
         var refreshToken = user?.RefreshTokens.FirstOrDefault(x => x.Token == token);
         if (refreshToken == null)
         {
-            _logger.LogWarning($"{ServiceName}.{methodName} -  Invalid user id or refresh token.");
-            return ResponseBase.Failure("Invalid or expired refresh token");
+            _logger.LogWarning($"{methodName} - Invalid user id or refresh token.");
+            return ResponseBase.Fail("Invalid or expired refresh token");
         }
 
         await RevokeRefreshTokenAsync(refreshToken);
@@ -78,15 +78,15 @@ public class AuthService : IAuthService
     public async Task<ResponseBase> RefreshTokenAsync()
     {
         var methodName = nameof(RefreshTokenAsync);
-        _logger.LogInformation($"{ServiceName}.{methodName} - Starting a token refresh.");
+        _logger.LogInformation($"{methodName} - Starting a token refresh.");
         var token = _authContext.RefreshToken();
         var userId = _authContext.UserId();
         var user = await _userManager.FindByIdAsync(userId);
         var refreshToken = user.RefreshTokens.FirstOrDefault(x => x.Token == token);
         if (refreshToken == null || !IsRefreshTokenValid(refreshToken))
         {
-            _logger.LogWarning($"{ServiceName}.{methodName} -  Invalid user id or refresh token.");
-            return ResponseBase.Failure("Invalid or expired refresh token");
+            _logger.LogWarning($"{methodName} - Invalid user id or refresh token.");
+            return ResponseBase.Fail("Invalid or expired refresh token");
         }
 
         var daysUntilExpiry = (refreshToken.ExpiryOn - DateTime.Now).TotalDays;
@@ -99,14 +99,14 @@ public class AuthService : IAuthService
 
         var newAccessToken = await GenerateAccessTokenAsync(user);
         _authContext.AccessToken(newAccessToken, AccessCookieOptions);
-        _logger.LogInformation($"{ServiceName}.{methodName} - Token successfully renewed.");
+        _logger.LogInformation($"{methodName} - Token successfully renewed.");
         return ResponseBase.Success();
     }
 
     public async Task<ResponseBase> SignUpAsync(SignUpCredentials credentials)
     {
         var methodName = nameof(SignUpAsync);
-        _logger.LogInformation($"{ServiceName}.{methodName} - Starting sign up for: {credentials.Username}");
+        _logger.LogInformation($"{methodName} - Starting sign up for: {credentials.Username}");
         try
         {
             await _transactionService.ExecuteInTransactionAsync(async () =>
@@ -122,32 +122,32 @@ public class AuthService : IAuthService
                     throw new Exception($"Failed to add role to user: {roleResult.Errors.FirstOrDefault()?.Description}");
             }, IsolationLevel.ReadCommitted);
 
-            _logger.LogInformation($"{ServiceName}.{methodName} - Sign up successful for: {credentials.Username}");
+            _logger.LogInformation($"{methodName} - Sign up successful for: {credentials.Username}");
             return ResponseBase.Success(HttpStatusCode.Created);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"{ServiceName}.{methodName} - Sign up failed for: {credentials.Username}");
-            return ResponseBase.Failure(ex.Message);
+            _logger.LogError(ex, $"{methodName} - Sign up failed for: {credentials.Username}");
+            return ResponseBase.Fail(ex.Message);
         }
     }
 
     public async Task<ResponseBase> SignInAsync(SignInCredentials credentials)
     {
         var methodName = nameof(SignInAsync);
-        _logger.LogInformation($"{ServiceName}.{methodName} - Attempting sign in for: {credentials.Username}");
+        _logger.LogInformation($"{methodName} - Attempting sign in for: {credentials.Username}");
         var user = await VerifyUserAsync(credentials);
         if (user == null)
         {
-            _logger.LogWarning($"{ServiceName}.{methodName} - Sign in failed for: {credentials.Username}");
-            return ResponseBase.Failure("Sign-in failed. Wrong login or password");
+            _logger.LogWarning($"{methodName} - Sign in failed for: {credentials.Username}");
+            return ResponseBase.Fail("Sign-in failed. Wrong login or password");
         }
 
         var accessToken = await GenerateAccessTokenAsync(user);
         var refreshToken = await GenerateRefreshTokenAsync(user);
         _authContext.AccessToken(accessToken, AccessCookieOptions);
         _authContext.RefreshToken(refreshToken.Token, AccessCookieOptions);
-        _logger.LogInformation($"{ServiceName}.{methodName} - Sign in successful for: {credentials.Username}");
+        _logger.LogInformation($"{methodName} - Sign in successful for: {credentials.Username}");
         return ResponseBase.Success();
     }
 
