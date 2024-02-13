@@ -11,8 +11,23 @@ internal class CategoryRepository : BaseRepository<Category, int, CategoryReposi
     {
     }
 
-    public async Task<Category?> ReadByNameAsync(string name)
+    public async Task<Category?> ReadByNameAsync(string name, CancellationToken cancellationToken = default)
     {
-        return await DbSet.FirstOrDefaultAsync(c => c.Name == name);
+        var methodName = nameof(ReadByNameAsync);
+        try
+        {
+            Logger.LogDebug($"{methodName} - Starting to find a {EntityType} by Name.");
+            var entity = await DbSet.FirstOrDefaultAsync(p => p.Name == name, cancellationToken);
+            if (entity != null)
+                Logger.LogDebug($"{methodName} - Successfully found a {EntityType} by Name.");
+            else
+                Logger.LogWarning($"{methodName} - {EntityType} by Name not found.");
+            return entity;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError($"{methodName} - Failed to find a {EntityType} by Name. Error: {ex.Message}");
+            throw;
+        }
     }
 }

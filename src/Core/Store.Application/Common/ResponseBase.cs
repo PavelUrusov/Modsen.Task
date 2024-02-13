@@ -22,12 +22,12 @@ public record ResponseBase
     public HttpStatusCode StatusCode { get; init; } = HttpStatusCode.OK;
     public string? ErrorMessage { get; init; }
 
-    public static ResponseBase Failure(string errorMessage)
+    public static ResponseBase Fail(string errorMessage)
     {
         return new ResponseBase(errorMessage, HttpStatusCode.BadRequest);
     }
 
-    public static ResponseBase Failure(string errorMessage, HttpStatusCode statusCode)
+    public static ResponseBase Fail(string errorMessage, HttpStatusCode statusCode)
     {
         return new ResponseBase(errorMessage, statusCode);
     }

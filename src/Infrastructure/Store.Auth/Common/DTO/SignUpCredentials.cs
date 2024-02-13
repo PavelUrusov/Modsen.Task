@@ -1,7 +1,3 @@
 ﻿namespace Store.Auth.Common.DTO;
 
-public record SignUpCredentials
-{
-    public string Username { get; set; } = null!;
-    public string Password { get; set; } = null!;
-}
+public record SignUpCredentials(string Username, string Password);

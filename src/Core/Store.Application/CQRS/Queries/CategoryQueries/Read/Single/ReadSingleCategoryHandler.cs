@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using MediatR;
 using Store.Application.Common;
+using Store.Application.CQRS.Logging.Interfaces;
 using Store.Application.Interfaces.Repositories;
 
 namespace Store.Application.CQRS.Queries.CategoryQueries.Read.Single;
 
-internal class ReadSingleCategoryHandler : IRequestHandler<ReadSingleCategoryQuery, ResponseBase>
+internal class ReadSingleCategoryHandler : IRequestHandler<ReadSingleCategoryQuery, ResponseBase>, ILoggingBehavior
 {
     private readonly IMapper _mapper;
     private readonly ICategoryRepository _repository;

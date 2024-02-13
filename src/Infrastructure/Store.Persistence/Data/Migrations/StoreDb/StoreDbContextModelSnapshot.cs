@@ -272,6 +272,9 @@ namespace Store.Persistence.Data.Migrations.StoreDb
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("Products", (string)null);
 
                     b.HasCheckConstraint("CK_Product_Price", "\"Price\" > 0.00");

@@ -9,13 +9,11 @@ internal class TransactionService : ITransactionService
 {
     private readonly StoreDbContext _dbContext;
     private readonly ILogger<TransactionService> _logger;
-    private readonly string _serviceName;
 
     public TransactionService(StoreDbContext dbContext, ILogger<TransactionService> logger)
     {
         _dbContext = dbContext;
         _logger = logger;
-        _serviceName = nameof(TransactionService);
     }
 
     public async Task ExecuteInTransactionAsync(Func<Task> action,
@@ -29,13 +27,13 @@ internal class TransactionService : ITransactionService
             await action();
             await transaction.CommitAsync(cancellationToken);
             _logger.LogDebug(
-                $"{_serviceName}.{methodName} Transaction {transaction.TransactionId} committed successfully.");
+                $"{methodName} - Transaction {transaction.TransactionId} committed successfully.");
         }
         catch (Exception ex)
         {
             await transaction.RollbackAsync(cancellationToken);
             _logger.LogError(
-                $"{_serviceName}.{methodName} Transaction rolled back due to an error. Error: {ex.Message}");
+                $"{methodName} - Transaction rolled back due to an error. Error: {ex.Message}");
             throw;
         }
     }

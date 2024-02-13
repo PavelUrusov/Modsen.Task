@@ -1,9 +1,11 @@
 ﻿using System.Security.Claims;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using Store.Application.Common;
 using Store.Auth.Interfaces;
 using Store.WebApi.Common;
+using Store.WebApi.Common.Validation.ProductController;
 
 namespace Store.WebApi.Extensions;
 
@@ -75,6 +77,18 @@ public static class DependencyInjection
                 }
             });
         });
+        return services;
+    }
+
+
+    public static IServiceCollection AddValidators(this IServiceCollection services)
+    {
+        services.Scan(scan => scan
+            .FromAssemblyOf<CreateProductCommandValidation>()
+            .AddClasses(classes => classes.AssignableTo(typeof(IValidator<>)))
+            .AsImplementedInterfaces()
+            .WithTransientLifetime());
+
         return services;
     }
 }

@@ -16,6 +16,8 @@ internal class ReadSingleCategoryValidator : IValidationHandler<ReadSingleCatego
     public async Task<ValidationResult> Validate(ReadSingleCategoryQuery request, CancellationToken cancellationToken)
     {
         var category = await _repository.ReadAsync(request.Id, cancellationToken);
-        return category == null ? ValidationResult.Fail("A category with this id does not exist") : ValidationResult.Success;
+        return category == null
+            ? ValidationResult.Fail($"A category with this id - {request.Id} does not exist")
+            : ValidationResult.Success;
     }
 }
