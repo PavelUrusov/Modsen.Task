@@ -6,6 +6,7 @@ namespace Store.Persistence.Data.Migrations.StoreDb;
 
 public partial class AddIndexAndMakeNameUniqueInProductTable : Migration
 {
+
     protected override void Up(MigrationBuilder migrationBuilder)
     {
         migrationBuilder.CreateIndex(
@@ -21,4 +22,5 @@ public partial class AddIndexAndMakeNameUniqueInProductTable : Migration
             "IX_Products_Name",
             "Products");
     }
+
 }

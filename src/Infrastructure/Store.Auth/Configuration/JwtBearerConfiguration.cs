@@ -2,6 +2,7 @@
 
 public class JwtBearerConfiguration
 {
+
     public string SecretKey { get; set; } = null!;
     public string AuthenticationScheme { get; set; } = null!;
     public bool RequireHttpsMetadata { get; set; }
@@ -15,4 +16,5 @@ public class JwtBearerConfiguration
     public TimeSpan ClockSkew { get; set; }
     public TimeSpan AccessTokenExpiryTime { get; set; }
     public TimeSpan RefreshTokenExpiryTime { get; set; }
+
 }

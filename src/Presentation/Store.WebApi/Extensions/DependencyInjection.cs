@@ -11,29 +11,42 @@ namespace Store.WebApi.Extensions;
 
 public static class DependencyInjection
 {
+
     public static IServiceCollection AddAuthorizationPolicy(this IServiceCollection services)
     {
         services.AddAuthorization(options =>
         {
             options.AddPolicy(Roles.Owner, builder => { builder.RequireClaim(ClaimTypes.Role, Roles.Owner); });
+
             options.AddPolicy(Roles.Admin, builder =>
             {
                 builder.RequireAssertion(x => x.User.HasClaim(ClaimTypes.Role, Roles.Admin) ||
                                               x.User.HasClaim(ClaimTypes.Role, Roles.Owner));
             });
+
+            options.AddPolicy(Roles.Employee, builder =>
+            {
+                builder.RequireAssertion(x => x.User.HasClaim(ClaimTypes.Role, Roles.Employee) ||
+                                              x.User.HasClaim(ClaimTypes.Role, Roles.Admin) ||
+                                              x.User.HasClaim(ClaimTypes.Role, Roles.Owner));
+            });
+
             options.AddPolicy(Roles.User, builder =>
             {
                 builder.RequireAssertion(x => x.User.HasClaim(ClaimTypes.Role, Roles.User) ||
+                                              x.User.HasClaim(ClaimTypes.Role, Roles.Employee) ||
                                               x.User.HasClaim(ClaimTypes.Role, Roles.Admin) ||
                                               x.User.HasClaim(ClaimTypes.Role, Roles.Owner));
             });
         });
+
         return services;
     }
 
     public static IServiceCollection AddAuthContext(this IServiceCollection services)
     {
         services.AddScoped<IAuthContext, AuthContext>();
+
         return services;
     }
 
@@ -45,6 +58,7 @@ public static class DependencyInjection
             policy.AllowAnyMethod();
             policy.AllowAnyOrigin();
         }));
+
         return services;
     }
 
@@ -53,6 +67,7 @@ public static class DependencyInjection
         services.AddSwaggerGen(option =>
         {
             option.SwaggerDoc("v1", new OpenApiInfo { Title = "Store API", Version = "v1" });
+
             option.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
             {
                 In = ParameterLocation.Header,
@@ -62,6 +77,7 @@ public static class DependencyInjection
                 BearerFormat = "JWT",
                 Scheme = JwtBearerDefaults.AuthenticationScheme
             });
+
             option.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {
@@ -77,9 +93,9 @@ public static class DependencyInjection
                 }
             });
         });
+
         return services;
     }
-
 
     public static IServiceCollection AddValidators(this IServiceCollection services)
     {
@@ -91,4 +107,5 @@ public static class DependencyInjection
 
         return services;
     }
+
 }

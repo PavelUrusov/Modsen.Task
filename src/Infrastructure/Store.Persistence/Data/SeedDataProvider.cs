@@ -9,7 +9,6 @@ namespace Store.Persistence.Data;
 
 public static class SeedDataProvider
 {
-    private const string ServiceName = nameof(SeedDataProvider);
 
     public static async Task<IHost> SeedInitialDataAsync(this IHost host)
     {
@@ -19,32 +18,37 @@ public static class SeedDataProvider
         var logger = scope.ServiceProvider.GetRequiredService<ILogger<IHost>>();
         await SeedInitialRolesAsync(roleManager, logger);
         await SeedInitialUsers(userManager, logger);
+
         return host;
     }
 
     private static async Task SeedInitialRolesAsync(RoleManager<IdentityRole<Guid>> roleManager, ILogger<IHost> logger)
     {
         var methodName = nameof(SeedInitialRolesAsync);
+
         if (!roleManager.Roles.Any())
         {
             var roles = new List<IdentityRole<Guid>>
             {
                 new(Roles.User),
+                new(Roles.Employee),
                 new(Roles.Admin),
                 new(Roles.Owner)
             };
-            foreach (var role in roles) await roleManager.CreateAsync(role);
+
+            foreach (var role in roles)
+                await roleManager.CreateAsync(role);
         }
         else
         {
-            logger.LogDebug($"{ServiceName}.{methodName} - Roles are already seeded");
+            logger.LogDebug($"{methodName} - Roles are already seeded");
         }
     }
-
 
     private static async Task SeedInitialUsers(UserManager<User> userManager, ILogger<IHost> logger)
     {
         var methodName = nameof(SeedInitialUsers);
+
         if (!userManager.Users.Any())
         {
             var user = new User { UserName = "owner" };
@@ -53,7 +57,8 @@ public static class SeedDataProvider
         }
         else
         {
-            logger.LogDebug($"{ServiceName}.{methodName} - Users are already seeded");
+            logger.LogDebug($"{methodName} - Users are already seeded");
         }
     }
+
 }

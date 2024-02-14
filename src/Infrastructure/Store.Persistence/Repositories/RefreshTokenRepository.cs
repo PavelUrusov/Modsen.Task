@@ -7,8 +7,10 @@ namespace Store.Persistence.Repositories;
 internal class RefreshTokenRepository : BaseRepository<RefreshToken, long, RefreshTokenRepository>,
     IRefreshTokenRepository
 {
+
     public RefreshTokenRepository(StoreDbContext dbContext, ILogger<RefreshTokenRepository> logger) : base(dbContext,
         logger)
     {
     }
+
 }

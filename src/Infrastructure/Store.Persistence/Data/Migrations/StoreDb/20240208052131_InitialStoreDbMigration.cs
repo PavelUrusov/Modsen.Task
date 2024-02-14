@@ -7,6 +7,7 @@ namespace Store.Persistence.Data.Migrations.StoreDb;
 
 public partial class InitialStoreDbMigration : Migration
 {
+
     protected override void Up(MigrationBuilder migrationBuilder)
     {
         migrationBuilder.CreateTable(
@@ -83,12 +84,14 @@ public partial class InitialStoreDbMigration : Migration
             constraints: table =>
             {
                 table.PrimaryKey("PK_ProductCategories", x => new { x.CategoriesId, x.ProductsId });
+
                 table.ForeignKey(
                     "FK_ProductCategories_Categories_CategoriesId",
                     x => x.CategoriesId,
                     "Categories",
                     "Id",
                     onDelete: ReferentialAction.Cascade);
+
                 table.ForeignKey(
                     "FK_ProductCategories_Products_ProductsId",
                     x => x.ProductsId,
@@ -111,6 +114,7 @@ public partial class InitialStoreDbMigration : Migration
             constraints: table =>
             {
                 table.PrimaryKey("PK_RoleClaims", x => x.Id);
+
                 table.ForeignKey(
                     "FK_RoleClaims_Roles_RoleId",
                     x => x.RoleId,
@@ -133,6 +137,7 @@ public partial class InitialStoreDbMigration : Migration
             constraints: table =>
             {
                 table.PrimaryKey("PK_Orders", x => x.Id);
+
                 table.ForeignKey(
                     "FK_Orders_Users_UserId",
                     x => x.UserId,
@@ -155,6 +160,7 @@ public partial class InitialStoreDbMigration : Migration
             constraints: table =>
             {
                 table.PrimaryKey("PK_UserClaims", x => x.Id);
+
                 table.ForeignKey(
                     "FK_UserClaims_Users_UserId",
                     x => x.UserId,
@@ -175,6 +181,7 @@ public partial class InitialStoreDbMigration : Migration
             constraints: table =>
             {
                 table.PrimaryKey("PK_UserLogins", x => new { x.LoginProvider, x.ProviderKey });
+
                 table.ForeignKey(
                     "FK_UserLogins_Users_UserId",
                     x => x.UserId,
@@ -193,12 +200,14 @@ public partial class InitialStoreDbMigration : Migration
             constraints: table =>
             {
                 table.PrimaryKey("PK_UserRoles", x => new { x.UserId, x.RoleId });
+
                 table.ForeignKey(
                     "FK_UserRoles_Roles_RoleId",
                     x => x.RoleId,
                     "Roles",
                     "Id",
                     onDelete: ReferentialAction.Cascade);
+
                 table.ForeignKey(
                     "FK_UserRoles_Users_UserId",
                     x => x.UserId,
@@ -219,6 +228,7 @@ public partial class InitialStoreDbMigration : Migration
             constraints: table =>
             {
                 table.PrimaryKey("PK_UserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
+
                 table.ForeignKey(
                     "FK_UserTokens_Users_UserId",
                     x => x.UserId,
@@ -242,12 +252,14 @@ public partial class InitialStoreDbMigration : Migration
             {
                 table.PrimaryKey("PK_OrderItems", x => x.Id);
                 table.CheckConstraint("CK_OrderItem_Quantity", "\"Quantity\" >= 0");
+
                 table.ForeignKey(
                     "FK_OrderItems_Orders_OrderId",
                     x => x.OrderId,
                     "Orders",
                     "Id",
                     onDelete: ReferentialAction.Cascade);
+
                 table.ForeignKey(
                     "FK_OrderItems_Products_ProductId",
                     x => x.ProductId,
@@ -352,4 +364,5 @@ public partial class InitialStoreDbMigration : Migration
         migrationBuilder.DropTable(
             "Users");
     }
+
 }

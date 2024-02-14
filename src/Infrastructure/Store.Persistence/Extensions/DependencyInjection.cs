@@ -13,10 +13,12 @@ namespace Store.Persistence.Extensions;
 
 public static class DependencyInjection
 {
+
     public static IServiceCollection AddPersistence(this IServiceCollection
         services, IConfiguration configuration)
     {
         services.AddDbContext<StoreDbContext>(opt => { opt.UseLazyLoadingProxies().UseNpgsql(configuration["DbConnection"]); });
+
         services.AddIdentity<User, IdentityRole<Guid>>(options =>
         {
             options.SignIn.RequireConfirmedEmail = false;
@@ -48,4 +50,5 @@ public static class DependencyInjection
 
         return services;
     }
+
 }

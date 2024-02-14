@@ -5,6 +5,7 @@ namespace Store.WebApi.Common.Validation.ProductController;
 
 public class CreateProductCommandValidation : AbstractValidator<CreateProductCommand>
 {
+
     public CreateProductCommandValidation()
     {
         RuleFor(x => x.Name)
@@ -33,4 +34,5 @@ public class CreateProductCommandValidation : AbstractValidator<CreateProductCom
             .NotNull().WithMessage("CategoryIds cannot be null")
             .NotEmpty().WithMessage("CategoryIds cannot be empty");
     }
+
 }

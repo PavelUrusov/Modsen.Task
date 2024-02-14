@@ -2,4 +2,4 @@
 
 namespace Store.Application.CQRS.Commands.CategoryCommands.Update;
 
-public record UpdateCategoryResponse : ResponseBase;
+public record UpdateCategoryResponse(int UpdatedId) : ResponseBase;

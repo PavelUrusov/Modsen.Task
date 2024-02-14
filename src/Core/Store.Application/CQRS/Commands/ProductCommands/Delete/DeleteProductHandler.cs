@@ -7,6 +7,7 @@ namespace Store.Application.CQRS.Commands.ProductCommands.Delete;
 
 internal class DeleteProductHandler : IRequestHandler<DeleteProductCommand, ResponseBase>, ILoggingBehavior
 {
+
     private readonly IProductRepository _productRepository;
 
     public DeleteProductHandler(IProductRepository productRepository)
@@ -16,8 +17,12 @@ internal class DeleteProductHandler : IRequestHandler<DeleteProductCommand, Resp
 
     public async Task<ResponseBase> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
     {
-        var deleteProduct = await _productRepository.ReadAsync(request.Id, cancellationToken);
-        await _productRepository.DeleteAsync(deleteProduct!, cancellationToken);
-        return ResponseBase.Success();
+        var deleteProduct = await _productRepository.ReadAsync(request.Id, cancellationToken) ??
+                            throw new InvalidOperationException($"Product with ID {request.Id} not found.");
+
+        await _productRepository.DeleteAsync(deleteProduct, cancellationToken);
+
+        return new DeleteProductResponse(deleteProduct.Id);
     }
+
 }

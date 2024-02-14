@@ -6,29 +6,30 @@ using Store.Application.Common;
 using Store.Application.CQRS.Commands.CategoryCommands.Create;
 using Store.Application.CQRS.Commands.CategoryCommands.Delete;
 using Store.Application.CQRS.Commands.CategoryCommands.Update;
-using Store.Application.CQRS.Queries.CategoryQueries.Read.Range;
-using Store.Application.CQRS.Queries.CategoryQueries.Read.Single;
+using Store.Application.CQRS.Queries.CategoryQueries.ReadRange;
+using Store.Application.CQRS.Queries.CategoryQueries.ReadSingle;
+using Store.WebApi.Common.Dtos;
 
 namespace Store.WebApi.Controllers;
 
-[AllowAnonymous]
-[Route("StoreAPI/[controller]")]
+[Route("api/[controller]")]
 [ApiController]
 public class CategoryController : ControllerBase
 {
+
     private readonly IValidator<CreateCategoryCommand> _createValidator;
     private readonly IValidator<DeleteCategoryCommand> _deleteValidator;
     private readonly ILogger<CategoryController> _logger;
     private readonly IMediator _mediator;
-    private readonly IValidator<ReadRangeCategoryQuery> _readRangeValidator;
-    private readonly IValidator<ReadSingleCategoryQuery> _readValidator;
+    private readonly IValidator<ReadCategoriesQuery> _readRangeValidator;
+    private readonly IValidator<ReadCategoryQuery> _readValidator;
     private readonly IValidator<UpdateCategoryCommand> _updateValidator;
 
     public CategoryController(IMediator mediator,
         ILogger<CategoryController> logger,
         IValidator<CreateCategoryCommand> createValidator,
-        IValidator<ReadRangeCategoryQuery> readRangeValidator,
-        IValidator<ReadSingleCategoryQuery> readValidator,
+        IValidator<ReadCategoriesQuery> readRangeValidator,
+        IValidator<ReadCategoryQuery> readValidator,
         IValidator<UpdateCategoryCommand> updateValidator,
         IValidator<DeleteCategoryCommand> deleteValidator)
     {
@@ -41,88 +42,98 @@ public class CategoryController : ControllerBase
         _deleteValidator = deleteValidator;
     }
 
-    [Authorize(Policy = nameof(Roles.Admin))]
-    [Route("[action]")]
+    [Authorize(Policy = nameof(Roles.Employee))]
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateCategoryCommand request)
+    public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryCommand command)
     {
-        var requestName = nameof(Create);
-        var result = await _createValidator.ValidateAsync(request);
-        if (!result.IsValid)
+        var validationResult = await _createValidator.ValidateAsync(command);
+
+        if (!validationResult.IsValid)
         {
-            _logger.LogError($"{requestName} - Invalid data in the request.");
-            return BadRequest(result.Errors);
+            _logger.LogError("CreateCategory - Validation failed: {Errors}", validationResult.Errors);
+
+            return BadRequest(validationResult.Errors);
         }
 
-        var response = await _mediator.Send(request);
+        var response = await _mediator.Send(command);
+
         return StatusCode((int)response.StatusCode, response);
     }
 
     [AllowAnonymous]
-    [Route("[action]")]
     [HttpGet]
-    public async Task<IActionResult> ReadRange([FromQuery] ReadRangeCategoryQuery request)
+    public async Task<IActionResult> GetCategories([FromQuery] int? take, [FromQuery] int? skip)
     {
-        var requestName = nameof(ReadRange);
-        var result = await _readRangeValidator.ValidateAsync(request);
-        if (!result.IsValid)
+        var request = new ReadCategoriesQuery(take, skip);
+        var validationResult = await _readRangeValidator.ValidateAsync(request);
+
+        if (!validationResult.IsValid)
         {
-            _logger.LogError($"{requestName} - Invalid data in the request.");
-            return BadRequest(result.Errors);
+            _logger.LogError("GetCategories - Validation failed: {Errors}", validationResult.Errors);
+
+            return BadRequest(validationResult.Errors);
         }
 
         var response = await _mediator.Send(request);
+
         return StatusCode((int)response.StatusCode, response);
     }
 
     [AllowAnonymous]
-    [Route("[action]")]
-    [HttpGet]
-    public async Task<IActionResult> Read([FromQuery] ReadSingleCategoryQuery request)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetCategory([FromRoute] int id)
     {
-        var requestName = nameof(Read);
-        var result = await _readValidator.ValidateAsync(request);
-        if (!result.IsValid)
+        var query = new ReadCategoryQuery(id);
+        var validationResult = await _readValidator.ValidateAsync(query);
+
+        if (!validationResult.IsValid)
         {
-            _logger.LogError($"{requestName} - Invalid data in the request.");
-            return BadRequest(result.Errors);
+            _logger.LogError("GetCategory - Validation failed: {Errors}", validationResult.Errors);
+
+            return BadRequest(validationResult.Errors);
         }
 
-        var response = await _mediator.Send(request);
+        var response = await _mediator.Send(query);
+
         return StatusCode((int)response.StatusCode, response);
     }
 
-    [Authorize(Policy = nameof(Roles.Admin))]
-    [Route("[action]")]
-    [HttpPost]
-    public async Task<IActionResult> Update([FromBody] UpdateCategoryCommand request)
+    [Authorize(Policy = nameof(Roles.Employee))]
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateCategory([FromRoute] int id, [FromBody] UpdateCategoryDto dto)
     {
-        var requestName = nameof(Update);
-        var result = await _updateValidator.ValidateAsync(request);
-        if (!result.IsValid)
+        var command = new UpdateCategoryCommand(id, dto.Name, dto.Description);
+        var validationResult = await _updateValidator.ValidateAsync(command);
+
+        if (!validationResult.IsValid)
         {
-            _logger.LogError($"{requestName} - Invalid data in the request.");
-            return BadRequest(result.Errors);
+            _logger.LogError("UpdateCategory - Validation failed: {Errors}", validationResult.Errors);
+
+            return BadRequest(validationResult.Errors);
         }
 
-        var response = await _mediator.Send(request);
+        var response = await _mediator.Send(command);
+
         return StatusCode((int)response.StatusCode, response);
     }
 
-    [Authorize(Policy = nameof(Roles.Admin))]
-    [Route("[action]")]
-    [HttpPost]
-    public async Task<IActionResult> Delete([FromBody] DeleteCategoryCommand request)
+    [Authorize(Policy = nameof(Roles.Employee))]
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteCategory([FromRoute] int id)
     {
-        var requestName = nameof(Delete);
-        var result = await _deleteValidator.ValidateAsync(request);
-        if (!result.IsValid)
+        var command = new DeleteCategoryCommand(id);
+        var validationResult = await _deleteValidator.ValidateAsync(command);
+
+        if (!validationResult.IsValid)
         {
-            _logger.LogError($"{requestName} - Invalid data in the request.");
-            return BadRequest(result.Errors);
+            _logger.LogError("DeleteCategory - Validation failed: {Errors}", validationResult.Errors);
+
+            return BadRequest(validationResult.Errors);
         }
 
-        var response = await _mediator.Send(request);
+        var response = await _mediator.Send(command);
+
         return StatusCode((int)response.StatusCode, response);
     }
+
 }

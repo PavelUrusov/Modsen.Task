@@ -7,6 +7,7 @@ namespace Store.Application.CQRS.Commands.CategoryCommands.Delete;
 
 internal class DeleteCategoryHandler : IRequestHandler<DeleteCategoryCommand, ResponseBase>, ILoggingBehavior
 {
+
     private readonly ICategoryRepository _repository;
 
     public DeleteCategoryHandler(ICategoryRepository repository)
@@ -16,8 +17,12 @@ internal class DeleteCategoryHandler : IRequestHandler<DeleteCategoryCommand, Re
 
     public async Task<ResponseBase> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
     {
-        var category = await _repository.ReadAsync(request.Id, cancellationToken);
-        await _repository.DeleteAsync(category!, cancellationToken);
-        return ResponseBase.Success();
+        var category = await _repository.ReadAsync(request.Id, cancellationToken) ??
+                       throw new InvalidOperationException($"Product with ID {request.Id} not found.");
+
+        await _repository.DeleteAsync(category, cancellationToken);
+
+        return new DeleteCategoryResponse(category.Id);
     }
+
 }

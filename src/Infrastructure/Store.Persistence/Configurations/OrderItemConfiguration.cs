@@ -6,6 +6,7 @@ namespace Store.Persistence.Configurations;
 
 internal class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
 {
+
     public void Configure(EntityTypeBuilder<OrderItem> builder)
     {
         builder.ToTable("OrderItems")
@@ -27,4 +28,5 @@ internal class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
             .HasForeignKey(oi => oi.OrderId)
             .OnDelete(DeleteBehavior.Cascade);
     }
+
 }

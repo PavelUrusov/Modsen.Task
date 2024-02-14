@@ -5,6 +5,7 @@ namespace Store.Application.Mapper;
 
 public class AssemblyMappingProfile : Profile
 {
+
     public AssemblyMappingProfile(Assembly assembly)
     {
         ApplyMappingsFromAssembly(assembly);
@@ -25,4 +26,5 @@ public class AssemblyMappingProfile : Profile
             methodInfo?.Invoke(instance, new object[] { this });
         }
     }
+
 }

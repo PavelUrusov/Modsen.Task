@@ -7,6 +7,7 @@ namespace Store.Persistence.Data.Migrations.StoreDb;
 
 public partial class AddRefreshTokenToUser : Migration
 {
+
     protected override void Up(MigrationBuilder migrationBuilder)
     {
         migrationBuilder.CreateTable(
@@ -27,6 +28,7 @@ public partial class AddRefreshTokenToUser : Migration
             constraints: table =>
             {
                 table.PrimaryKey("PK_RefreshTokens", x => x.Id);
+
                 table.ForeignKey(
                     "FK_RefreshTokens_Users_UserId",
                     x => x.UserId,
@@ -52,4 +54,5 @@ public partial class AddRefreshTokenToUser : Migration
         migrationBuilder.DropTable(
             "RefreshTokens");
     }
+
 }

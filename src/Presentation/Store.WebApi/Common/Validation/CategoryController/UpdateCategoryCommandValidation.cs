@@ -5,6 +5,7 @@ namespace Store.WebApi.Common.Validation.CategoryController;
 
 public class UpdateCategoryCommandValidation : AbstractValidator<UpdateCategoryCommand>
 {
+
     public UpdateCategoryCommandValidation()
     {
         RuleFor(x => x.Id)
@@ -12,14 +13,18 @@ public class UpdateCategoryCommandValidation : AbstractValidator<UpdateCategoryC
 
         RuleFor(x => x.Name)
             .Cascade(CascadeMode.Stop)
-            .NotNull().WithMessage("Name is required")
             .NotEmpty().WithMessage("Name cannot be empty")
-            .MaximumLength(255).WithMessage("Name length cannot exceed 255 characters");
+            .MaximumLength(255).WithMessage("Name length cannot exceed 255 characters")
+            .When(x => x.Name != null);
 
         RuleFor(x => x.Description)
             .Cascade(CascadeMode.Stop)
             .NotEmpty()
             .MaximumLength(1023).WithMessage("Description length cannot exceed 1023 characters")
             .When(x => x.Description != null);
+
+        RuleFor(x => x)
+            .Must(x => !(string.IsNullOrEmpty(x.Name) && string.IsNullOrEmpty(x.Description))).WithMessage("All data is empty");
     }
+
 }

@@ -2,6 +2,7 @@
 
 public record ValidationResult
 {
+
     public bool IsSuccessful { get; set; } = true;
     public string? Error { get; init; }
     public static ValidationResult Success => new();
@@ -10,4 +11,5 @@ public record ValidationResult
     {
         return new ValidationResult { IsSuccessful = false, Error = error };
     }
+
 }

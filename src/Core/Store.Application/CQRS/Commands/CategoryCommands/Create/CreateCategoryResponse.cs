@@ -2,4 +2,4 @@
 
 namespace Store.Application.CQRS.Commands.CategoryCommands.Create;
 
-public record CreateCategoryResponse : ResponseBase;
+public record CreateCategoryResponse(int CreatedId) : ResponseBase;

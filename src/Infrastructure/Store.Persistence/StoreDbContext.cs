@@ -8,6 +8,7 @@ namespace Store.Persistence;
 
 internal class StoreDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
 {
+
     public StoreDbContext(DbContextOptions<StoreDbContext> options)
         : base(options)
     {
@@ -31,4 +32,5 @@ internal class StoreDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid
         builder.Entity<IdentityRoleClaim<Guid>>().ToTable("RoleClaims");
         builder.Entity<IdentityUserToken<Guid>>().ToTable("UserTokens");
     }
+
 }

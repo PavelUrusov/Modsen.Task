@@ -5,6 +5,7 @@ namespace Store.WebApi.Common;
 
 public class AuthContext : IAuthContext
 {
+
     private const string AccessTokenCookieName = "X-Access-Token";
     private const string RefreshTokenCookieName = "X-Refresh-Token";
     private readonly HttpContext _httpContext;
@@ -59,9 +60,11 @@ public class AuthContext : IAuthContext
         if (options == null)
         {
             _httpContext.Response.Cookies.Append(key, value);
+
             return;
         }
 
         _httpContext.Response.Cookies.Append(key, value, options);
     }
+
 }
