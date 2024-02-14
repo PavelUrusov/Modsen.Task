@@ -4,4 +4,5 @@ namespace Store.Application.Interfaces.Repositories;
 
 public interface IOrderItemRepository : IRepository<OrderItem, int>
 {
+
 }

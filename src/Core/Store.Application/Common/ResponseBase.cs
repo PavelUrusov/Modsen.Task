@@ -4,6 +4,7 @@ namespace Store.Application.Common;
 
 public record ResponseBase
 {
+
     public ResponseBase()
     {
     }
@@ -41,4 +42,5 @@ public record ResponseBase
     {
         return new ResponseBase(HttpStatusCode.OK);
     }
+
 }

@@ -5,9 +5,11 @@ namespace Store.WebApi.Common.Validation.ProductController;
 
 public class DeleteProductCommandValidation : AbstractValidator<DeleteProductCommand>
 {
+
     public DeleteProductCommandValidation()
     {
         RuleFor(x => x.Id)
             .NotEmpty().WithMessage("Id is required");
     }
+
 }

@@ -11,9 +11,11 @@ namespace Store.Application.Extensions;
 
 public static class DependencyInjection
 {
+
     public static IServiceCollection AddMapper(this IServiceCollection services)
     {
         services.AddAutoMapper(config => { config.AddProfile(new AssemblyMappingProfile(typeof(IMapWith<>).Assembly)); });
+
         return services;
     }
 
@@ -31,6 +33,7 @@ public static class DependencyInjection
             .WithTransientLifetime());
 
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+
         return services;
     }
 
@@ -43,6 +46,8 @@ public static class DependencyInjection
             .WithTransientLifetime());
 
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+
         return services;
     }
+
 }

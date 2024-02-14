@@ -7,8 +7,8 @@ namespace Store.Application.CQRS.Logging;
 public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TResponse : ResponseBase, new() where TRequest : IRequest<TResponse>
 {
-    private readonly ILogger<LoggingBehavior<TRequest, TResponse>> _logger;
 
+    private readonly ILogger<LoggingBehavior<TRequest, TResponse>> _logger;
 
     public LoggingBehavior(ILogger<LoggingBehavior<TRequest, TResponse>> logger)
     {
@@ -22,6 +22,8 @@ public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
         _logger.LogInformation($"Handling {requestName}.");
         var response = await next();
         _logger.LogInformation($"Finished handling {requestName} with code - {response.StatusCode}.");
+
         return response;
     }
+
 }

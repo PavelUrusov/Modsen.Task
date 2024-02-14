@@ -6,6 +6,7 @@ namespace Store.Application.CQRS.Commands.ProductCommands.Create;
 
 internal class CreateProductValidator : IValidationHandler<CreateProductCommand>
 {
+
     private readonly ICategoryRepository _categoryRepository;
     private readonly IProductRepository _productRepository;
 
@@ -18,8 +19,9 @@ internal class CreateProductValidator : IValidationHandler<CreateProductCommand>
     public async Task<ValidationResult> Validate(CreateProductCommand request, CancellationToken cancellationToken)
     {
         var product = await _productRepository.ReadByNameAsync(request.Name, cancellationToken);
+
         if (product != null)
-            return ValidationResult.Fail($"A product with that name - {request.Name}already exists");
+            return ValidationResult.Fail($"A product with that name - {request.Name} already exists");
 
         foreach (var id in request.CategoryIds)
             if (await _categoryRepository.ReadAsync(id, cancellationToken) == null)
@@ -27,4 +29,5 @@ internal class CreateProductValidator : IValidationHandler<CreateProductCommand>
 
         return ValidationResult.Success;
     }
+
 }

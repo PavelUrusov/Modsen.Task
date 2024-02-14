@@ -6,6 +6,7 @@ namespace Store.Persistence.Configurations;
 
 public class OrderConfiguration : IEntityTypeConfiguration<Order>
 {
+
     public void Configure(EntityTypeBuilder<Order> builder)
     {
         builder.ToTable("Orders")
@@ -25,4 +26,5 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
             .HasForeignKey(o => o.UserId)
             .OnDelete(DeleteBehavior.Restrict);
     }
+
 }

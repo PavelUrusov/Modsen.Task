@@ -5,6 +5,8 @@ namespace Store.Domain.Entities;
 
 public class User : IdentityUser<Guid>, IEntity<Guid>
 {
+
     public virtual IEnumerable<Order> Orders { get; set; } = null!;
     public virtual IEnumerable<RefreshToken> RefreshTokens { get; set; } = null!;
+
 }

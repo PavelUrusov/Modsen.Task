@@ -6,6 +6,7 @@ namespace Store.Persistence.Configurations;
 
 public class RefreshTokenConfiguration : IEntityTypeConfiguration<RefreshToken>
 {
+
     public void Configure(EntityTypeBuilder<RefreshToken> builder)
     {
         builder.ToTable("RefreshTokens")
@@ -40,4 +41,5 @@ public class RefreshTokenConfiguration : IEntityTypeConfiguration<RefreshToken>
             .HasForeignKey(rt => rt.UserId)
             .OnDelete(DeleteBehavior.Cascade);
     }
+
 }

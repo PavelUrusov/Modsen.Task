@@ -4,6 +4,7 @@ namespace Store.Auth.Interfaces;
 
 public interface IAuthContext
 {
+
     string? IpAddress();
     string? UserId();
 
@@ -13,4 +14,5 @@ public interface IAuthContext
     void RefreshToken(string token, CookieOptions? options = null);
     public void ResetRefreshToken();
     public void ResetAccessToken();
+
 }

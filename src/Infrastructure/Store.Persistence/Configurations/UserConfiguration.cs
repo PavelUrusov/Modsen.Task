@@ -6,6 +6,7 @@ namespace Store.Persistence.Configurations;
 
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {
+
     public void Configure(EntityTypeBuilder<User> builder)
     {
         builder
@@ -19,4 +20,5 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasForeignKey(rt => rt.UserId)
             .OnDelete(DeleteBehavior.Cascade);
     }
+
 }

@@ -5,6 +5,7 @@ namespace Store.WebApi.Common.Validation.CategoryController;
 
 public class CreateCategoryCommandValidation : AbstractValidator<CreateCategoryCommand>
 {
+
     public CreateCategoryCommandValidation()
     {
         RuleFor(x => x.Name)
@@ -19,4 +20,5 @@ public class CreateCategoryCommandValidation : AbstractValidator<CreateCategoryC
             .MaximumLength(1023).WithMessage("Description length cannot exceed 1023 characters")
             .When(x => x.Description != null);
     }
+
 }

@@ -6,7 +6,9 @@ namespace Store.Persistence.Repositories;
 
 internal class OrderItemRepository : BaseRepository<OrderItem, int, OrderItemRepository>, IOrderItemRepository
 {
+
     public OrderItemRepository(StoreDbContext dbContext, ILogger<OrderItemRepository> logger) : base(dbContext, logger)
     {
     }
+
 }

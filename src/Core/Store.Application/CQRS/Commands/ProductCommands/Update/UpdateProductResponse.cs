@@ -2,4 +2,4 @@
 
 namespace Store.Application.CQRS.Commands.ProductCommands.Update;
 
-public record UpdateProductResponse : ResponseBase;
+public record UpdateProductResponse(int UpdatedId) : ResponseBase;

@@ -2,4 +2,4 @@
 
 namespace Store.Application.CQRS.Commands.CategoryCommands.Delete;
 
-public record DeleteCategoryResponse : ResponseBase;
+public record DeleteCategoryResponse(int DeletedId) : ResponseBase;

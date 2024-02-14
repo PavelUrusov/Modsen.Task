@@ -7,6 +7,7 @@ namespace Store.Application.CQRS.Commands.CategoryCommands.Update;
 
 internal class UpdateCategoryHandler : IRequestHandler<UpdateCategoryCommand, ResponseBase>, ILoggingBehavior
 {
+
     private readonly ICategoryRepository _repository;
 
     public UpdateCategoryHandler(ICategoryRepository repository)
@@ -16,10 +17,18 @@ internal class UpdateCategoryHandler : IRequestHandler<UpdateCategoryCommand, Re
 
     public async Task<ResponseBase> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
     {
-        var updCategory = await _repository.ReadAsync(request.Id, cancellationToken);
-        updCategory!.Name = request.Name;
-        updCategory.Description = request.Description;
+        var updCategory = await _repository.ReadAsync(request.Id, cancellationToken) ??
+                          throw new InvalidOperationException($"Product with ID {request.Id} not found.");
+
+        if (!string.IsNullOrEmpty(request.Name))
+            updCategory.Name = request.Name;
+
+        if (!string.IsNullOrEmpty(request.Description))
+            updCategory.Description = request.Description;
+
         await _repository.UpdateAsync(updCategory, cancellationToken);
-        return ResponseBase.Success();
+
+        return new UpdateCategoryResponse(updCategory.Id);
     }
+
 }

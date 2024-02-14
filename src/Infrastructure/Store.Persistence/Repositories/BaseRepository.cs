@@ -11,6 +11,7 @@ internal abstract class BaseRepository<TEntity, TKey, TRepository> : IRepository
     where TKey : struct
     where TRepository : BaseRepository<TEntity, TKey, TRepository>
 {
+
     protected readonly StoreDbContext DbContext;
     protected readonly DbSet<TEntity> DbSet;
     protected readonly string EntityType;
@@ -27,6 +28,7 @@ internal abstract class BaseRepository<TEntity, TKey, TRepository> : IRepository
     public virtual async Task CreateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var methodName = nameof(CreateAsync);
+
         try
         {
             Logger.LogDebug($"{methodName} - Starting to create a new {EntityType}.");
@@ -37,6 +39,7 @@ internal abstract class BaseRepository<TEntity, TKey, TRepository> : IRepository
         catch (Exception ex)
         {
             Logger.LogError($"{methodName} - Failed to create a new {EntityType}. Error: {ex.Message}");
+
             throw;
         }
     }
@@ -45,6 +48,7 @@ internal abstract class BaseRepository<TEntity, TKey, TRepository> : IRepository
         CancellationToken cancellationToken = default)
     {
         var methodName = nameof(CreateRangeAsync);
+
         try
         {
             Logger.LogDebug($"{methodName} - Starting to create multiple {EntityType} entities.");
@@ -55,6 +59,7 @@ internal abstract class BaseRepository<TEntity, TKey, TRepository> : IRepository
         catch (Exception ex)
         {
             Logger.LogError($"{methodName} - Failed to create multiple {EntityType} entities. Error: {ex.Message}");
+
             throw;
         }
     }
@@ -62,6 +67,7 @@ internal abstract class BaseRepository<TEntity, TKey, TRepository> : IRepository
     public virtual async Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var methodName = nameof(UpdateAsync);
+
         try
         {
             Logger.LogDebug($"{methodName} - Starting to update a {EntityType}.");
@@ -72,6 +78,7 @@ internal abstract class BaseRepository<TEntity, TKey, TRepository> : IRepository
         catch (Exception ex)
         {
             Logger.LogError($"{methodName} - {methodName} - Failed to update a {EntityType}. Error: {ex.Message}");
+
             throw;
         }
     }
@@ -80,6 +87,7 @@ internal abstract class BaseRepository<TEntity, TKey, TRepository> : IRepository
         CancellationToken cancellationToken = default)
     {
         var methodName = nameof(UpdateRangeAsync);
+
         try
         {
             Logger.LogDebug($"{methodName} - Starting to update multiple {EntityType} entities.");
@@ -90,6 +98,27 @@ internal abstract class BaseRepository<TEntity, TKey, TRepository> : IRepository
         catch (Exception ex)
         {
             Logger.LogError($"{methodName} - Failed to update multiple {EntityType} entities. Error: {ex.Message}");
+
+            throw;
+        }
+    }
+
+    public virtual async Task<IEnumerable<TEntity>> ReadManyAsync(IEnumerable<TKey> keys,
+        CancellationToken cancellationToken = default)
+    {
+        var methodName = nameof(ReadManyAsync);
+
+        try
+        {
+            Logger.LogDebug($"{methodName} - Starting to find a {EntityType} by ID.");
+            var entities = await DbSet.Where(entity => keys.Contains(entity.Id)).ToListAsync(cancellationToken);
+
+            return entities;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError($"{methodName} - Failed to find a {EntityType} by ID. Error: {ex.Message}");
+
             throw;
         }
     }
@@ -97,19 +126,23 @@ internal abstract class BaseRepository<TEntity, TKey, TRepository> : IRepository
     public virtual async Task<TEntity?> ReadAsync(TKey key, CancellationToken cancellationToken = default)
     {
         var methodName = nameof(ReadAsync);
+
         try
         {
             Logger.LogDebug($"{methodName} - Starting to find a {EntityType} by ID.");
             var entity = await DbSet.FindAsync(key);
+
             if (entity != null)
                 Logger.LogDebug($"{methodName} - Successfully found a {EntityType} by ID.");
             else
                 Logger.LogWarning($"{methodName} - {EntityType} by ID not found.");
+
             return entity;
         }
         catch (Exception ex)
         {
             Logger.LogError($"{methodName} - Failed to find a {EntityType} by ID. Error: {ex.Message}");
+
             throw;
         }
     }
@@ -120,21 +153,58 @@ internal abstract class BaseRepository<TEntity, TKey, TRepository> : IRepository
         CancellationToken cancellationToken = default) where TKeySelector : IComparable
     {
         var methodName = nameof(ReadRangeAsync);
+
         try
         {
             Logger.LogDebug(
                 $"{methodName} - Starting to read a range of {EntityType} entities, skipping {skip} and taking {take}.");
+
             var query = DbSet.AsQueryable();
+
             if (filters != null)
                 foreach (var filter in filters)
                     query = query.Where(filter);
+
             var entities = await query.OrderBy(keySelector).Skip(skip).Take(take).ToListAsync(cancellationToken);
             Logger.LogDebug($"{methodName} - Successfully read a range of {EntityType} entities.");
+
             return entities;
         }
         catch (Exception ex)
         {
             Logger.LogError($"{methodName} - Failed to read a range of {EntityType} entities. Error: {ex.Message}");
+
+            throw;
+        }
+    }
+
+    public virtual async Task<IEnumerable<TEntity>> ReadRangeAsync<TKeySelector>(
+        Expression<Func<TEntity, TKeySelector>> keySelector,
+        IEnumerable<Expression<Func<TEntity, bool>>>? filters = default,
+        CancellationToken cancellationToken = default) where TKeySelector : IComparable
+    {
+        var methodName = nameof(ReadRangeAsync);
+
+        try
+        {
+            Logger.LogDebug(
+                $"{methodName} - Starting to read a range of {EntityType} entities.");
+
+            var query = DbSet.AsQueryable();
+
+            if (filters != null)
+                foreach (var filter in filters)
+                    query = query.Where(filter);
+
+            var entities = await query.OrderBy(keySelector).ToListAsync(cancellationToken);
+            Logger.LogDebug($"{methodName} - Successfully read a range of {EntityType} entities.");
+
+            return entities;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError($"{methodName} - Failed to read a range of {EntityType} entities. Error: {ex.Message}");
+
             throw;
         }
     }
@@ -142,16 +212,19 @@ internal abstract class BaseRepository<TEntity, TKey, TRepository> : IRepository
     public virtual async Task<IEnumerable<TEntity>> ReadAllAsync(CancellationToken cancellationToken = default)
     {
         var methodName = nameof(ReadAllAsync);
+
         try
         {
             Logger.LogDebug($"{methodName} - Starting to read all {EntityType} entities.");
             var entities = await DbSet.ToListAsync(cancellationToken);
             Logger.LogDebug($"{methodName} - Successfully read all {EntityType} entities.");
+
             return entities;
         }
         catch (Exception ex)
         {
             Logger.LogError($"{methodName} - Failed to read all {EntityType} entities. Error: {ex.Message}");
+
             throw;
         }
     }
@@ -159,6 +232,7 @@ internal abstract class BaseRepository<TEntity, TKey, TRepository> : IRepository
     public virtual async Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var methodName = nameof(DeleteAsync);
+
         try
         {
             Logger.LogDebug($"{methodName} - Starting to delete a {EntityType}.");
@@ -169,6 +243,7 @@ internal abstract class BaseRepository<TEntity, TKey, TRepository> : IRepository
         catch (Exception ex)
         {
             Logger.LogError($"{methodName} - Failed to delete a {EntityType}. Error: {ex.Message}");
+
             throw;
         }
     }
@@ -177,6 +252,7 @@ internal abstract class BaseRepository<TEntity, TKey, TRepository> : IRepository
         CancellationToken cancellationToken = default)
     {
         var methodName = nameof(DeleteRangeAsync);
+
         try
         {
             Logger.LogDebug($"{methodName} - Starting to delete multiple {EntityType} entities.");
@@ -187,7 +263,9 @@ internal abstract class BaseRepository<TEntity, TKey, TRepository> : IRepository
         catch (Exception ex)
         {
             Logger.LogError($"{methodName} - Failed to delete multiple {EntityType} entities. Error: {ex.Message}");
+
             throw;
         }
     }
+
 }

@@ -10,13 +10,15 @@ namespace Store.Auth.Extensions;
 
 public static class DependencyInjection
 {
+
     public static IServiceCollection AddJwtBearerAuthentication(this IServiceCollection services,
         IConfiguration configuration)
     {
         var cfg = new JwtBearerConfiguration();
         configuration.Bind("JwtBearer", cfg);
 
-        if (cfg.SecretKey.IsNullOrEmpty()) throw new ArgumentException("SecretKey can't be null or empty");
+        if (cfg.SecretKey.IsNullOrEmpty())
+            throw new ArgumentException("SecretKey can't be null or empty");
 
         services.AddAuthentication(options =>
         {
@@ -26,6 +28,7 @@ public static class DependencyInjection
         {
             options.RequireHttpsMetadata = cfg.RequireHttpsMetadata;
             options.SaveToken = cfg.SaveToken;
+
             options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = cfg.ValidateIssuer,
@@ -54,6 +57,8 @@ public static class DependencyInjection
     public static IServiceCollection AddAuthService(this IServiceCollection services)
     {
         services.AddScoped<IAuthService, AuthService>();
+
         return services;
     }
+
 }

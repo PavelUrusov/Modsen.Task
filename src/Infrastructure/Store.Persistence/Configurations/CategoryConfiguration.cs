@@ -6,6 +6,7 @@ namespace Store.Persistence.Configurations;
 
 public class CategoryConfiguration : IEntityTypeConfiguration<Category>
 {
+
     public void Configure(EntityTypeBuilder<Category> builder)
     {
         builder.ToTable("Categories")
@@ -26,4 +27,5 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
             .WithMany(p => p.Categories)
             .UsingEntity(pc => pc.ToTable("ProductCategories"));
     }
+
 }

@@ -5,4 +5,5 @@ namespace Store.Auth.Interfaces;
 
 public interface IRefreshTokenRepository : IRepository<RefreshToken, long>
 {
+
 }

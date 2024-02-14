@@ -4,6 +4,7 @@ namespace Store.Domain.Entities;
 
 public class Order : IEntity<int>
 {
+
     public DateTime CreationDate { get; set; }
 
     public virtual User User { get; set; } = null!;
@@ -11,4 +12,5 @@ public class Order : IEntity<int>
 
     public virtual IEnumerable<OrderItem> OrderItems { get; set; } = null!;
     public int Id { get; set; }
+
 }
