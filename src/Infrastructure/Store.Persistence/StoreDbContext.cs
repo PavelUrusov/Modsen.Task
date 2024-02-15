@@ -6,7 +6,7 @@ using Store.Domain.Entities;
 
 namespace Store.Persistence;
 
-internal class StoreDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
+internal class StoreDbContext : IdentityDbContext<User, Role, Guid>
 {
 
     public StoreDbContext(DbContextOptions<StoreDbContext> options)
@@ -25,7 +25,7 @@ internal class StoreDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid
         base.OnModelCreating(builder);
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         builder.Entity<User>().ToTable("Users");
-        builder.Entity<IdentityRole<Guid>>().ToTable("Roles");
+        builder.Entity<Role>().ToTable("Roles");
         builder.Entity<IdentityUserRole<Guid>>().ToTable("UserRoles");
         builder.Entity<IdentityUserLogin<Guid>>().ToTable("UserLogins");
         builder.Entity<IdentityUserClaim<Guid>>().ToTable("UserClaims");

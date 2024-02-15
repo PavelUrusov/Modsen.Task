@@ -3,14 +3,14 @@ using Store.Auth.Interfaces;
 
 namespace Store.WebApi.Common;
 
-public class AuthContext : IAuthContext
+public class AuthorizationContext : IAuthorizationContext
 {
 
     private const string AccessTokenCookieName = "X-Access-Token";
     private const string RefreshTokenCookieName = "X-Refresh-Token";
     private readonly HttpContext _httpContext;
 
-    public AuthContext(IHttpContextAccessor httpContextAccessor)
+    public AuthorizationContext(IHttpContextAccessor httpContextAccessor)
     {
         _httpContext = httpContextAccessor.HttpContext ?? throw new ArgumentNullException("Something went wrong...");
     }
@@ -33,6 +33,11 @@ public class AuthContext : IAuthContext
     public void ResetAccessToken()
     {
         _httpContext.Response.Cookies.Delete(AccessTokenCookieName);
+    }
+
+    public string? Role()
+    {
+        return _httpContext.User.FindFirst(ClaimTypes.Role)?.Value;
     }
 
     public string? AccessToken()

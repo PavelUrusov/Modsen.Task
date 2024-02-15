@@ -21,7 +21,7 @@ namespace Store.Auth.Services;
 public class AuthService : IAuthService
 {
 
-    private readonly IAuthContext _authContext;
+    private readonly IAuthorizationContext _authorizationContext;
     private readonly string _ipAddress;
     private readonly JwtBearerConfiguration _jwtConfig;
     private readonly ILogger<AuthService> _logger;
@@ -33,11 +33,11 @@ public class AuthService : IAuthService
 
     public AuthService(IOptions<JwtBearerConfiguration> jwtConfiguration, ILogger<AuthService> logger,
         IRefreshTokenRepository refreshTokenRepository, ITransactionService transactionService, UserManager<User> userManager,
-        IAuthContext authContext)
+        IAuthorizationContext authorizationContext)
     {
-        _authContext = authContext;
+        _authorizationContext = authorizationContext;
 
-        _ipAddress = authContext.IpAddress() ??
+        _ipAddress = authorizationContext.IpAddress() ??
                      throw new ArgumentNullException("Failed to determine user due to inability to determine client IP address.");
 
         _logger = logger;
@@ -64,8 +64,8 @@ public class AuthService : IAuthService
         var methodName = nameof(SignOutAsync);
         _logger.LogInformation($"{methodName} - Logging out the user.");
 
-        var token = _authContext.RefreshToken();
-        var userId = _authContext.UserId();
+        var token = _authorizationContext.RefreshToken();
+        var userId = _authorizationContext.UserId();
         var user = await _userManager.FindByIdAsync(userId);
         var refreshToken = user?.RefreshTokens.FirstOrDefault(x => x.Token == token);
 
@@ -77,8 +77,8 @@ public class AuthService : IAuthService
         }
 
         await RevokeRefreshTokenAsync(refreshToken);
-        _authContext.ResetAccessToken();
-        _authContext.ResetRefreshToken();
+        _authorizationContext.ResetAccessToken();
+        _authorizationContext.ResetRefreshToken();
 
         return ResponseBase.Success();
     }
@@ -87,8 +87,8 @@ public class AuthService : IAuthService
     {
         var methodName = nameof(RefreshTokenAsync);
         _logger.LogInformation($"{methodName} - Starting a token refresh.");
-        var token = _authContext.RefreshToken();
-        var userId = _authContext.UserId();
+        var token = _authorizationContext.RefreshToken();
+        var userId = _authorizationContext.UserId();
         var user = await _userManager.FindByIdAsync(userId);
         var refreshToken = user.RefreshTokens.FirstOrDefault(x => x.Token == token);
 
@@ -105,11 +105,11 @@ public class AuthService : IAuthService
         {
             await RevokeRefreshTokenAsync(refreshToken);
             var newRefreshToken = await GenerateRefreshTokenAsync(user);
-            _authContext.RefreshToken(newRefreshToken.Token, RefreshCookieOptions);
+            _authorizationContext.RefreshToken(newRefreshToken.Token, RefreshCookieOptions);
         }
 
         var newAccessToken = await GenerateAccessTokenAsync(user);
-        _authContext.AccessToken(newAccessToken, AccessCookieOptions);
+        _authorizationContext.AccessToken(newAccessToken, AccessCookieOptions);
         _logger.LogInformation($"{methodName} - Token successfully renewed.");
 
         return ResponseBase.Success();
@@ -164,8 +164,8 @@ public class AuthService : IAuthService
 
         var accessToken = await GenerateAccessTokenAsync(user);
         var refreshToken = await GenerateRefreshTokenAsync(user);
-        _authContext.AccessToken(accessToken, AccessCookieOptions);
-        _authContext.RefreshToken(refreshToken.Token, AccessCookieOptions);
+        _authorizationContext.AccessToken(accessToken, AccessCookieOptions);
+        _authorizationContext.RefreshToken(refreshToken.Token, AccessCookieOptions);
         _logger.LogInformation($"{methodName} - Sign in successful for: {credentials.Username}");
 
         return ResponseBase.Success();

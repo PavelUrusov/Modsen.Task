@@ -19,7 +19,7 @@ public static class DependencyInjection
     {
         services.AddDbContext<StoreDbContext>(opt => { opt.UseLazyLoadingProxies().UseNpgsql(configuration["DbConnection"]); });
 
-        services.AddIdentity<User, IdentityRole<Guid>>(options =>
+        services.AddIdentity<User, Role>(options =>
         {
             options.SignIn.RequireConfirmedEmail = false;
             options.Password.RequireDigit = false;
