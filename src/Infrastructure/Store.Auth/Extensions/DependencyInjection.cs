@@ -61,4 +61,11 @@ public static class DependencyInjection
         return services;
     }
 
+    public static IServiceCollection AddUserRoleService(this IServiceCollection services)
+    {
+        services.AddScoped<IUserRoleService, UserRoleService>();
+
+        return services;
+    }
+
 }

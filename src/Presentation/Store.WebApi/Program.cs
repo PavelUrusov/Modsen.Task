@@ -25,6 +25,7 @@ builder.Services.AddAuthService();
 builder.Services.AddAuthContext();
 builder.Services.AddAuthorizationPolicy();
 builder.Services.AddValidators();
+builder.Services.AddUserRoleService();
 
 var app = builder.Build();
 

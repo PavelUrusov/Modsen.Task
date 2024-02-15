@@ -45,7 +45,7 @@ public static class DependencyInjection
 
     public static IServiceCollection AddAuthContext(this IServiceCollection services)
     {
-        services.AddScoped<IAuthContext, AuthContext>();
+        services.AddScoped<IAuthorizationContext, AuthorizationContext>();
 
         return services;
     }
