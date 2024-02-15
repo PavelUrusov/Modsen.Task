@@ -37,7 +37,7 @@ public class RolesManagementController : ControllerBase
 
         if (!validationResult.IsValid)
         {
-            _logger.LogError($"UpdateUserRole - Validation failed: {validationResult.Errors}");
+            _logger.LogWarning($"UpdateUserRole - Validation failed: {validationResult.Errors}");
 
             return BadRequest(validationResult.Errors);
         }

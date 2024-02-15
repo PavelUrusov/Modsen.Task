@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Store.Application.Common;
 using Store.Application.CQRS.Commands.OrderCommands.Create;
 using Store.Application.CQRS.Queries.OrdersQueries.ReadRange;
+using Store.Application.CQRS.Queries.OrdersQueries.ReadSingleOrder;
 using Store.Application.CQRS.Queries.OrdersQueries.ReadUserOrders;
 using Store.WebApi.Common.Dtos;
 
@@ -19,19 +20,23 @@ public class OrderController : ControllerBase
     private readonly IValidator<CreateOrderCommand> _createValidator;
     private readonly IValidator<ReadOrdersQuery> _getOrdersValidator;
     private readonly IValidator<ReadUserOrdersQuery> _getUserOrdersValidator;
+    private readonly IValidator<ReadOrderQuery> _getOrderValidator;
     private readonly ILogger<OrderController> _logger;
     private readonly IMediator _mediator;
 
-    public OrderController(ILogger<OrderController> logger,
+    public OrderController(
+        ILogger<OrderController> logger,
         IValidator<CreateOrderCommand> createValidator,
         IValidator<ReadOrdersQuery> getOrdersValidator,
         IValidator<ReadUserOrdersQuery> getUserOrdersValidator,
+        IValidator<ReadOrderQuery> getOrderValidator,
         IMediator mediator)
     {
         _logger = logger;
         _createValidator = createValidator;
         _getOrdersValidator = getOrdersValidator;
         _getUserOrdersValidator = getUserOrdersValidator;
+        _getOrderValidator = getOrderValidator;
         _mediator = mediator;
     }
 
@@ -48,7 +53,7 @@ public class OrderController : ControllerBase
 
         if (!validationResult.IsValid)
         {
-            _logger.LogError("CreateOrder - Validation failed: {Errors}", validationResult.Errors);
+            _logger.LogWarning($"CreateOrder - Validation failed: {validationResult.Errors}");
 
             return BadRequest(validationResult.Errors);
         }
@@ -67,7 +72,7 @@ public class OrderController : ControllerBase
 
         if (!validationResult.IsValid)
         {
-            _logger.LogError("GetOrders - Validation failed: {Errors}", validationResult.Errors);
+            _logger.LogWarning($"GetOrders - Validation failed: {validationResult.Errors}");
 
             return BadRequest(validationResult.Errors);
         }
@@ -86,7 +91,26 @@ public class OrderController : ControllerBase
 
         if (!validationResult.IsValid)
         {
-            _logger.LogError("GetUserOrders - Validation failed: {Errors}", validationResult.Errors);
+            _logger.LogWarning($"GetUserOrders - Validation failed: {validationResult.Errors}");
+
+            return BadRequest(validationResult.Errors);
+        }
+
+        var response = await _mediator.Send(query);
+
+        return StatusCode((int)response.StatusCode, response);
+    }
+
+    [Authorize(Policy = nameof(Roles.Employee))]
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GerOrder([FromRoute] int id)
+    {
+        var query = new ReadOrderQuery(id);
+        var validationResult = await _getOrderValidator.ValidateAsync(query);
+
+        if (!validationResult.IsValid)
+        {
+            _logger.LogWarning($"GetOrder - Validation failed: {validationResult.Errors}");
 
             return BadRequest(validationResult.Errors);
         }

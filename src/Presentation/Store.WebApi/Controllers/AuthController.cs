@@ -36,7 +36,7 @@ public class AuthController : ControllerBase
 
         if (!validationResult.IsValid)
         {
-            _logger.LogError("Register - Validation failed: {Errors}", validationResult.Errors);
+            _logger.LogWarning($"Register - Validation failed: {validationResult.Errors}");
 
             return BadRequest(validationResult.Errors);
         }
@@ -54,7 +54,7 @@ public class AuthController : ControllerBase
 
         if (!validationResult.IsValid)
         {
-            _logger.LogError("Login - Validation failed: {Errors}", validationResult.Errors);
+            _logger.LogWarning($"Login - Validation failed: {validationResult.Errors}");
 
             return BadRequest(validationResult.Errors);
         }

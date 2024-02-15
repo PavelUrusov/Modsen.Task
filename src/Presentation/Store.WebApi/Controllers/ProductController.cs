@@ -50,7 +50,7 @@ public class ProductController : ControllerBase
 
         if (!validationResult.IsValid)
         {
-            _logger.LogError("Product creation failed validation.");
+            _logger.LogWarning($"CreateProduct - failed validation: {validationResult.Errors}");
 
             return BadRequest(validationResult.Errors);
         }
@@ -68,7 +68,7 @@ public class ProductController : ControllerBase
 
         if (!validationResult.IsValid)
         {
-            _logger.LogError("Product range query failed validation.");
+            _logger.LogWarning($"GetProducts - Validation failed: {validationResult.Errors}");
 
             return BadRequest(validationResult.Errors);
         }
@@ -87,7 +87,7 @@ public class ProductController : ControllerBase
 
         if (!validationResult.IsValid)
         {
-            _logger.LogError("Single product query failed validation.");
+            _logger.LogWarning($"GetProduct - Validation failed: {validationResult.Errors}");
 
             return BadRequest(validationResult.Errors);
         }
@@ -106,7 +106,7 @@ public class ProductController : ControllerBase
 
         if (!validationResult.IsValid)
         {
-            _logger.LogError("Product update failed validation.");
+            _logger.LogWarning($"UpdateProduct - Validation failed: {validationResult.Errors}");
 
             return BadRequest(validationResult.Errors);
         }
@@ -125,7 +125,7 @@ public class ProductController : ControllerBase
 
         if (!validationResult.IsValid)
         {
-            _logger.LogError("Product deletion failed validation.");
+            _logger.LogWarning($"DeleteProduct - Validation failed: {validationResult.Errors}");
 
             return BadRequest(validationResult.Errors);
         }

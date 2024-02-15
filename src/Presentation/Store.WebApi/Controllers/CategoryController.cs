@@ -50,7 +50,7 @@ public class CategoryController : ControllerBase
 
         if (!validationResult.IsValid)
         {
-            _logger.LogError("CreateCategory - Validation failed: {Errors}", validationResult.Errors);
+            _logger.LogWarning($"CreateCategory - Validation failed: {validationResult.Errors}");
 
             return BadRequest(validationResult.Errors);
         }
@@ -69,7 +69,7 @@ public class CategoryController : ControllerBase
 
         if (!validationResult.IsValid)
         {
-            _logger.LogError("GetCategories - Validation failed: {Errors}", validationResult.Errors);
+            _logger.LogWarning($"GetCategories - Validation failed: {validationResult.Errors}");
 
             return BadRequest(validationResult.Errors);
         }
@@ -88,7 +88,7 @@ public class CategoryController : ControllerBase
 
         if (!validationResult.IsValid)
         {
-            _logger.LogError("GetCategory - Validation failed: {Errors}", validationResult.Errors);
+            _logger.LogWarning($"GetCategory - Validation failed: {validationResult.Errors}");
 
             return BadRequest(validationResult.Errors);
         }
@@ -107,7 +107,7 @@ public class CategoryController : ControllerBase
 
         if (!validationResult.IsValid)
         {
-            _logger.LogError("UpdateCategory - Validation failed: {Errors}", validationResult.Errors);
+            _logger.LogWarning($"UpdateCategory - Validation failed: {validationResult.Errors}");
 
             return BadRequest(validationResult.Errors);
         }
@@ -126,7 +126,7 @@ public class CategoryController : ControllerBase
 
         if (!validationResult.IsValid)
         {
-            _logger.LogError("DeleteCategory - Validation failed: {Errors}", validationResult.Errors);
+            _logger.LogWarning($"DeleteCategory - Validation failed: {validationResult.Errors}");
 
             return BadRequest(validationResult.Errors);
         }
